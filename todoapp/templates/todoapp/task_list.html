@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1></h1>
+
+    {% if user.is_authenticated %}
+        <h1>Мои задачи</h1>
+        <a href="{% url 'task_create' %}" class="btn btn-primary">Создать задачу</a>
+
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Не выполненные</h2>
+                {% if not_completed_tasks %}
+                    <ul>
+                        {% for task in not_completed_tasks %}
+                            <li>
+                                {{ task.title }} - {{ task.description }}
+                                <a href="{% url 'task_update' pk=task.pk %}" class="btn btn-sm btn-primary">Редактировать</a>
+                                <a href="{% url 'task_toggle' pk=task.pk %}" class="btn btn-sm btn-outline-secondary">
+                                    {% if task.completed %}Отменить выполнение{% else %}Пометить как выполненное{% endif %}
+                                </a>
+                                <a href="{% url 'task_delete' pk=task.pk %}" class="btn btn-danger btn-sm">Удалить</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>Нет невыполненных задач.</p>
+                {% endif %}
+            </div>
+
+            <div class="col-md-6">
+                <h2>Выполненные</h2>
+                {% if completed_tasks %}
+                    <ul>
+                        {% for task in completed_tasks %}
+                            <li>
+                                {{ task.title }} - {{ task.description }}
+                                <a href="{% url 'task_update' pk=task.pk %}" class="btn btn-sm btn-primary">Редактировать</a>
+                                <a href="{% url 'task_toggle' pk=task.pk %}" class="btn btn-sm btn-outline-secondary">
+                                    {% if task.completed %}Отменить выполнение{% else %}Пометить как выполненное{% endif %}
+                                </a>
+                                <a href="{% url 'task_delete' pk=task.pk %}" class="btn btn-danger btn-sm">Удалить</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>Нет выполненных задач.</p>
+                {% endif %}
+            </div>
+        </div>
+
+    {% else %}
+        <div class="jumbotron">
+            <h1 class="display-4">Ознакомьтесь с To-Do App!</h1>
+            <p class="lead">Вот примерный список задач, которые вы сможете создавать и организовывать после регистрации:</p>
+            <hr class="my-4">
+
+            <ul>
+                <li>Купить продукты на неделю</li>
+                <li>Записаться на прием к врачу</li>
+                <li>Позвонить родителям</li>
+                <li>Закончить отчет по работе</li>
+            </ul>
+
+            <p>Войдите или зарегистрируйтесь, чтобы создать свой собственный список задач!</p>
+            <a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button">Войти</a>
+            <a class="btn btn-success btn-lg" href="{% url 'register' %}" role="button">Зарегистрироваться</a>
+
+            <a href="{% url 'login' %}" class="btn btn-info btn-lg">Создать свою задачу (войдите или зарегистрируйтесь)</a>
+
+        </div>
+    {% endif %}
+
+{% endblock %}
