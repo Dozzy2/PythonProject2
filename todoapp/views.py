@@ -3,8 +3,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.urls import reverse
 from .forms import TaskForm
-from .models import Task
-
+from .models import Task,Notification
+from django.contrib.auth.decorators import login_required
 
 def register(request):
     if request.method == 'POST':
@@ -42,6 +42,11 @@ def task_create(request):
             task = form.save(commit=False)
             task.user = request.user
             task.save()
+            Notification.objects.create(
+                user=request.user,
+                notification_type='new_task',
+                message=f"Создана новая задача: {task.title}"
+            )
             return redirect('task_list')
     else:
         form = TaskForm()
@@ -52,6 +57,11 @@ def task_delete(request, pk):
     task = get_object_or_404(Task, pk=pk)
 
     if request.method == 'POST':
+        Notification.objects.create(
+            user=request.user,
+            notification_type='task_update',
+            message=f"Удалена задача: {task.title}"
+        )
         task.delete()
         return redirect('task_list')
 
@@ -64,6 +74,12 @@ def task_toggle(request, pk):
 
     task.completed = not task.completed  #
     task.save()
+    status = "выполнена" if task.completed else "не выполнена"
+    Notification.objects.create(
+        user=request.user,
+        notification_type='task_update',
+        message=f"Задача '{task.title}' помечена как {status}"
+    )
 
     return redirect('task_list')
 
@@ -75,9 +91,26 @@ def task_update(request, pk):
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
             form.save()
+            Notification.objects.create(
+                user=request.user,
+                notification_type='task_update',
+                message=f"Задача '{task.title}' обновлена"
+            )
             return redirect('task_list')
     else:
         form = TaskForm(instance=task)
 
     context = {'form': form, 'task': task}
     return render(request, 'todoapp/task_update.html', context)
+
+@login_required
+def delete_notification(request, notification_id):
+    notification = get_object_or_404(Notification, id=notification_id, user=request.user)
+    notification.delete()
+    return redirect('task_list')
+
+@login_required
+def clear_all_notifications(request):
+    Notification.objects.filter(user=request.user).delete()
+    return redirect('task_list')
+

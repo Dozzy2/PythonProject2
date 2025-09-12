@@ -27,3 +27,17 @@ class Task(models.Model):
             ordering = ['completed', '-priority', 'due_date', '-created_at'] # Сортировка задач
 
 
+class Notification(models.Model):
+        NOTIFICATION_TYPES = (
+            ('new_task', 'Новая задача'),
+            ('task_update', 'Обновление задачи'),
+            ('deadline_reminder', 'Напоминание о дедлайне'),
+        )
+        user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+        notification_type = models.CharField(max_length=50, choices=NOTIFICATION_TYPES)
+        message = models.TextField()
+        is_read = models.BooleanField(default=False)
+        created_at = models.DateTimeField(auto_now_add=True)
+
+        def __str__(self):
+            return f"{self.user.username} - {self.notification_type}"
