@@ -114,3 +114,11 @@ def clear_all_notifications(request):
     Notification.objects.filter(user=request.user).delete()
     return redirect('task_list')
 
+
+def profile(request):
+    return render(request, 'todoapp/profile.html', {'user': request.user})
+
+
+def all_notifications(request):
+    notifications = request.user.notifications.all().order_by('-created_at')
+    return render(request, 'todoapp/all_notifications.html', {'notifications': notifications})

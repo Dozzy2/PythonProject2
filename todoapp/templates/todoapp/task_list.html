@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
+  <link rel="stylesheet" href="{% static '/css/style.css' %}">
+  <script src="{% static '/js/notifications.js' %}"></script>
     <h1></h1>
 
     {% if user.is_authenticated %}
         <h1>Мои задачи</h1>
         <a href="{% url 'task_create' %}" class="btn btn-primary">Создать задачу</a>
-
+        <a class="btn btn-primary btn-sm" href="{% url 'profile' %}" role="button">Профиль</a>
         <div class="row">
             <div class="col-md-6">
                 <h2>Не выполненные</h2>

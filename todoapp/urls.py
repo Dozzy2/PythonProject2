@@ -11,6 +11,8 @@ urlpatterns = [
     path('tasks/<int:pk>/', views.task_delete, name='task_delete'),
     path('toggle/<int:pk>/', views.task_toggle, name='task_toggle'),
     path('tasks/<int:pk>/update/', views.task_update, name='task_update'),
-    path('notifications/<int:notification_id>/delete/', views.delete_notification, name='delete_notification'),
-    path('notifications/clear/', views.clear_all_notifications, name='clear_all_notifications'),
+    path('notifications.js/<int:notification_id>/delete/', views.delete_notification, name='delete_notification'),
+    path('notifications.js/clear/', views.clear_all_notifications, name='clear_all_notifications'),
+    path('profile/', views.profile, name='profile'),
+    path('notifications.js/', views.all_notifications, name='all_notifications'),
 ]
