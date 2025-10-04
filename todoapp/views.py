@@ -13,7 +13,7 @@ def register(request):
             username = form.cleaned_data.get('username')
             form.save()
             messages.success(request, f'Аккаунт {username} создан!')
-            return redirect(reverse('login'))  # Убрано пространство имен accounts:
+            return redirect(reverse('login'))
         else:
             form = UserCreationForm()
     else:

@@ -3,65 +3,111 @@
 {% block content %}
   <link rel="stylesheet" href="{% static '/css/style.css' %}">
   <script src="{% static '/js/notifications.js' %}"></script>
-    <h1></h1>
 
-    {% if user.is_authenticated %}
-        <h1>Мои задачи</h1>
-        <a href="{% url 'task_create' %}" class="btn btn-primary">Создать задачу</a>
-        <a class="btn btn-primary btn-sm" href="{% url 'profile' %}" role="button">Профиль</a>
-        <div class="row">
-            <div class="col-md-6">
-                <h2>Не выполненные</h2>
-                {% if not_completed_tasks %}
-                    <ul>
-                        {% for task in not_completed_tasks %}
-                            <li>
-                                {{ task.title }} - {{ task.description }}
-                                <a href="{% url 'task_update' pk=task.pk %}" class="btn btn-sm btn-primary">Редактировать</a>
-                                <a href="{% url 'task_toggle' pk=task.pk %}" class="btn btn-sm btn-outline-secondary">
-                                    {% if task.completed %}Отменить выполнение{% else %}Пометить как выполненное{% endif %}
-                                </a>
-                                <a href="{% url 'task_delete' pk=task.pk %}" class="btn btn-danger btn-sm">Удалить</a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>Нет невыполненных задач.</p>
-                {% endif %}
-            </div>
+  <div class="container-fluid">
+    <div class="row">
 
-            <div class="col-md-6">
-                <h2>Выполненные</h2>
-                {% if completed_tasks %}
-                    <ul>
-                        {% for task in completed_tasks %}
-                            <li>
-                                {{ task.title }} - {{ task.description }}
-                                <a href="{% url 'task_update' pk=task.pk %}" class="btn btn-sm btn-primary">Редактировать</a>
-                                <a href="{% url 'task_toggle' pk=task.pk %}" class="btn btn-sm btn-outline-secondary">
-                                    {% if task.completed %}Отменить выполнение{% else %}Пометить как выполненное{% endif %}
-                                </a>
-                                <a href="{% url 'task_delete' pk=task.pk %}" class="btn btn-danger btn-sm">Удалить</a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>Нет выполненных задач.</p>
-                {% endif %}
-            </div>
+      {% if user.is_authenticated %}
+        <!-- Боковая панель (только для авторизованных) -->
+        <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+          <div class="position-sticky pt-3">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'task_list' %}">
+                  <span data-feather="home"></span>
+                  Задачи
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'task_create' %}">
+                  <span data-feather="file"></span>
+                  Создать задачу
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'profile' %}">
+                  <span data-feather="users"></span>
+                  Профиль
+                </a>
+              </li>
+
+            </ul>
+          </div>
+        </nav>
+      {% endif %}
+
+      <!-- Основной контент -->
+      <main
+        class="{% if user.is_authenticated %}col-md-9 ms-sm-auto col-lg-10 px-md-4{% else %}col-md-12{% endif %}">
+        <div
+          class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+          <h1 class="h2">Мои задачи</h1>
         </div>
+        {% if user.is_authenticated %}
 
-    {% else %}
-        <div class="jumbotron">
+          <a href="{% url 'task_create' %}" class=""></a>
+
+          <div class="row">
+            <div class="col-md-6">
+              <h2>Не выполненные</h2>
+              {% if not_completed_tasks %}
+                <ul class="list-unstyled">
+                  {% for task in not_completed_tasks %}
+                    <li class="d-flex align-items-center justify-content-between mb-2">
+                      <div class="task-title" style="flex-grow: 1; margin-right: 15px; word-break: break-word;">
+                        {{ task.title }} - {{ task.description }}
+                      </div>
+                      <div class="btn-group btn-group-sm" role="group" aria-label="Task actions">
+                          <a href="{% url 'task_update' pk=task.pk %}" class="btn btn-primary">Редактировать</a>
+                        <a href="{% url 'task_toggle' pk=task.pk %}" class="btn btn-outline-secondary">
+                          {% if task.completed %}Отменить выполнение{% else %}Пометить как выполненное{% endif %}
+                        </a>
+                        <a href="{% url 'task_delete' pk=task.pk %}" class="btn btn-danger">Удалить</a>
+                      </div>
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                <p>Нет невыполненных задач.</p>
+              {% endif %}
+            </div>
+
+            <div class="col-md-6">
+              <h2>Выполненные</h2>
+              {% if completed_tasks %}
+                <ul class="list-unstyled">
+                  {% for task in completed_tasks %}
+                    <li class="d-flex align-items-center justify-content-between mb-2">
+                      <div class="task-title" style="flex-grow: 1; margin-right: 15px; word-break: break-word;">
+                        {{ task.title }} - {{ task.description }}
+                      </div>
+                      <div class="btn-group btn-group-sm" role="group" aria-label="Task actions">
+                        <a href="{% url 'task_update' pk=task.pk %}" class="btn btn-primary">Редактировать</a>
+                        <a href="{% url 'task_toggle' pk=task.pk %}" class="btn btn-outline-secondary">
+                          {% if task.completed %}Отменить выполнение{% else %}Пометить как выполненное{% endif %}
+                        </a>
+                        <a href="{% url 'task_delete' pk=task.pk %}" class="btn btn-danger">Удалить</a>
+                      </div>
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                <p>Нет выполненных задач.</p>
+              {% endif %}
+            </div>
+          </div>
+
+        {% else %}
+          <div class="jumbotron">
             <h1 class="display-4">Ознакомьтесь с To-Do App!</h1>
             <p class="lead">Вот примерный список задач, которые вы сможете создавать и организовывать после регистрации:</p>
             <hr class="my-4">
 
             <ul>
-                <li>Купить продукты на неделю</li>
-                <li>Записаться на прием к врачу</li>
-                <li>Позвонить родителям</li>
-                <li>Закончить отчет по работе</li>
+              <li>Купить продукты на неделю</li>
+              <li>Записаться на прием к врачу</li>
+              <li>Позвонить родителям</li>
+              <li>Закончить отчет по работе</li>
             </ul>
 
             <p>Войдите или зарегистрируйтесь, чтобы создать свой собственный список задач!</p>
@@ -69,8 +115,15 @@
             <a class="btn btn-success btn-lg" href="{% url 'register' %}" role="button">Зарегистрироваться</a>
 
             <a href="{% url 'login' %}" class="btn btn-info btn-lg">Создать свою задачу (войдите или зарегистрируйтесь)</a>
+          </div>
+        {% endif %}
+      </main>
+    </div>
+  </div>
 
-        </div>
-    {% endif %}
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script>
+    feather.replace()
+  </script>
 
 {% endblock %}

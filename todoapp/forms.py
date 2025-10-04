@@ -16,3 +16,20 @@ class TaskForm(forms.ModelForm):
 #     class Meta(UserCreationForm.Meta):
 #         model = UserCreationForm.Meta.model
 #         fields = UserCreationForm.Meta.fields + ('email',) # Добавляем поле email
+
+from django import forms
+
+class RegistrationForm(forms.Form):
+    username = forms.CharField(
+        label='Имя пользователя',
+        max_length=150,
+        widget=forms.TextInput(attrs={'widget_type': 'text'})
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'widget_type': 'password'}),
+        label='Пароль'
+    )
+    password2 = forms.CharField(
+        widget=forms.PasswordInput(attrs={'widget_type': 'password'}),
+        label='Подтверждение пароля'
+    )
